@@ -1,0 +1,62 @@
+# Config for entropy-based bbox selection — verbatim port from
+# /scratch/ty45972/MLLM_object_detection/object_detection_Qwen/regression_training/config_regression.yaml
+# Only root_dir is changed to point at the locally-available processed_data.
+
+data:
+  root_dir: "/scratch/ty45972/MLLM_object_detection/object_detection_Qwen/regression_training/processed_data"
+  dataset: "COCO"
+  object_num: "single"
+  target_dir: "temp_0.5_top_p_0.9_response_10"
+  test_results_dir: "/data2/Tianze/MLLM_object_detection/object_detection_Qwen/evaluation/regression_results"
+  train_csv: "train_list.csv"
+  val_csv: "val_list.csv"
+  test_csv: "test_list.csv"
+  train_pkl_dir: "train"
+  val_pkl_dir: "val"
+  test_pkl_dir: "test"
+
+model:
+  type: "independent"
+  num_layers: 28
+  num_heads: 28
+  hidden_dims: [64, 128, 256]
+  dropout_rate: 0.3
+  fusion_dim: 256
+  num_classes: 1
+  target_size: [24, 24]
+  normalize_attention: true
+  use_sigmoid: true
+
+training:
+  batch_size: 64
+  num_epochs: 100
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  patience: 15
+  min_delta: 0.001
+  loss_type: "mse"
+
+optimizer:
+  type: "adam"
+  momentum: 0.9
+
+scheduler:
+  type: "cosine"
+  step_size: 30
+  gamma: 0.1
+  T_max: 100
+
+dataloader:
+  num_workers: 4
+  pin_memory: true
+  drop_last: false
+
+logging:
+  save_dir: "./runs"
+  experiment_name: "enhanced_bbox_regressor"
+  log_interval: 10
+  save_best_model: true
+  save_last_model: true
+
+device: "cuda:1"
+seed: 42

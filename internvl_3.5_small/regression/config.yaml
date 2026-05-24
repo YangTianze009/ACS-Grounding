@@ -1,0 +1,68 @@
+# Configuration file for BBox Quality Regression - Enhanced Version
+
+# Data paths
+data:
+  root_dir: "/scratch/ty45972/MLLM_object_detection/object_detection_InternVL/regression_training/processed_data"
+  dataset: "COCO"
+  # object_num: "multiple"
+  target_dir: "temp_1.0_top_p_0.9_response_10"
+  train_csv: "train_list.csv"
+  val_csv: "val_list.csv"
+  test_csv: "test_list.csv"
+  train_pkl_dir: "train"
+  val_pkl_dir: "val"
+  test_pkl_dir: "test"
+
+# Model parameters - Enhanced
+model:
+  type: "independent"  # "independent" or "shared"
+  num_layers: 36  # number of attention layers
+  num_heads: 32   # NEW: number of heads per layer (input channels = num_layers * num_heads = 36 * 32)
+  hidden_dims: [64, 128, 256]  # ENHANCED: CNN hidden dimensions
+  dropout_rate: 0.3
+  fusion_dim: 256  # ENHANCED: fusion layer dimension
+  num_classes: 1  # 输出单个IoU值
+  # target_size: [24, 24]  # resize target for attention maps
+  normalize_attention: true
+  use_sigmoid: true  # 是否在输出层使用sigmoid限制到[0,1]
+
+# Training parameters - Adjusted for enhanced model
+training:
+  batch_size: 64  # REDUCED: larger model needs smaller batch size
+  num_epochs: 100
+  learning_rate: 0.0003  # REDUCED: larger model needs smaller LR
+  weight_decay: 0.0001
+  patience: 15  # early stopping patience
+  min_delta: 0.001  # minimum change for early stopping
+  loss_type: "mse"  # "mse", "mae", "smooth_l1"
+
+# Optimizer and scheduler
+optimizer:
+  type: "adam"  # "adam" or "sgd"
+  momentum: 0.9  # for SGD
+
+scheduler:
+  type: "cosine"  # "cosine", "step", or "none"
+  step_size: 30  # for StepLR
+  gamma: 0.1  # for StepLR
+  T_max: 100  # for CosineAnnealingLR
+
+# Data loading
+dataloader:
+  num_workers: 4
+  pin_memory: true
+  drop_last: false
+
+# Logging and saving
+logging:
+  save_dir: "./runs"
+  experiment_name: "bbox_regressor"  # Updated name
+  log_interval: 10  # log every N batches
+  save_best_model: true
+  save_last_model: true
+
+# Device
+device: "cuda:1"  # "cuda" or "cpu"
+
+# Random seed
+seed: 42

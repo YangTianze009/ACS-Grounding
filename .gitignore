@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.ipynb_checkpoints/
+
+# Trained model checkpoints (regenerable via training)
+*.pth
+*.pt
+*.bin
+*.safetensors
+*.ckpt
+
+# Compressed archives
+*.tar
+*.tar.gz
+*.zip
+
+# Large evaluation/output artifacts (regenerable from code + processed_data)
+*/evaluation/entropy_selection_results/
+*/evaluation/regression_results/
+*/evaluation/eval_results/
+*/evaluation/oracle/
+*/evaluation/baseline_logs/
+*/regression/runs/
+*/entropy/__pycache__/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
