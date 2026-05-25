@@ -74,6 +74,37 @@ The COCO / Objects365 source images themselves are the standard public versions 
 
 ---
 
+## Stage 0 — Data generation (optional)
+
+The selection / regression / evaluation code in this repo consumes the pre-computed `model_response/*.pkl.gz` files (one per (image, response) pair). Each pkl stores the LVLM-generated text, the extracted bounding boxes, the **attention maps** at every layer and head for each coordinate token, and the **vocab-entropy** at each coordinate sub-token. These pkl files are produced by the extraction code in `<model>/extraction/`:
+
+- [`<model>/extraction/bbox_attention_extractor.py`](qwen2.5_small/extraction/bbox_attention_extractor.py) — low-level extractor. Runs the LVLM once, captures `outputs.scores` for vocab entropy and `outputs.attentions` for spatial attention, then aligns each generation step to its `x1 / y1 / x2 / y2` coordinate sub-token.
+- [`<model>/extraction/batch_bbox_attention_processor.py`](qwen2.5_small/extraction/batch_bbox_attention_processor.py) — driver. Iterates over the dataset (COCO / Objects365 single- or multi-object split), invokes the extractor per image, and writes the pkl files into `<DATA_ROOT>/.../model_response/`.
+
+```bash
+# Qwen2.5-VL (single A6000, ~6-8 h for 2,225 images × 10 responses at τ=1.0)
+cd qwen2.5_small/extraction
+python batch_bbox_attention_processor.py \
+    --dataset COCO --data_type testing --object_num single \
+    --temperature 1.0 --top_p 0.9 --top_k 100 --num_responses 10
+
+# InternVL-3.5 (similar, slightly slower; uses --device "0, 1" by default)
+cd internvl_3.5_small/extraction
+python batch_bbox_attention_processor.py \
+    --dataset COCO --data_type testing --object_num single \
+    --temperature 1.0 --top_p 0.9 --top_k 100 --num_responses 10
+```
+
+**Requirements** (beyond the selection-side deps):
+
+- The LVLM weights — `Qwen2.5-VL-7B-Instruct` and `InternVL3_5-8B-HF`. The driver scripts have hard-coded paths near the top (`/data2/Tianze/weights/...`); edit to your local path.
+- The dataset's image files and a CSV listing target instances (the driver expects a specific dataset layout — see `setup_config()` inside each driver).
+- A CUDA-capable GPU (~20-30 GB VRAM).
+
+**Skip Stage 0 if** you already have the pkl files at `<DATA_ROOT>/.../model_response/` (e.g., from the authors). The Stage 1+ pipelines below read those pkls directly.
+
+---
+
 ## Quick start
 
 ```bash
@@ -115,6 +146,10 @@ experiments/
 ├── run_all_baselines.sh      ← top-level driver: loops 12 configs × all baselines
 │
 ├── qwen2.5_small/            Qwen2.5-VL-7B   (28 layers × 28 heads, 24×24 attn after bilinear resize)
+│   ├── extraction/           Stage 0: produce raw model_response/*.pkl.gz (attention + vocab entropy)
+│   │   ├── bbox_attention_extractor.py    low-level extractor (per image)
+│   │   └── batch_bbox_attention_processor.py    dataset-level driver (CLI)
+│   │
 │   ├── regression/           ACS-Learned: trained Attention-IoU Regressor
 │   │   ├── config.yaml
 │   │   ├── data_processing.py     one-time prep: raw model_response → processed_data tensors
