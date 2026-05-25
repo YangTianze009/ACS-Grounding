@@ -76,10 +76,10 @@ The COCO / Objects365 source images themselves are the standard public versions 
 
 ## Stage 0 — Data generation (optional)
 
-The selection / regression / evaluation code in this repo consumes the pre-computed `model_response/*.pkl.gz` files (one per (image, response) pair). Each pkl stores the LVLM-generated text, the extracted bounding boxes, the **attention maps** at every layer and head for each coordinate token, and the **vocab-entropy** at each coordinate sub-token. These pkl files are produced by the extraction code in `<model>/extraction/`:
+The selection / regression / evaluation pipelines below consume the pre-computed `model_response/*.pkl.gz` files. These are produced by the extraction code in `<model>/extraction/`:
 
-- [`<model>/extraction/bbox_attention_extractor.py`](qwen2.5_small/extraction/bbox_attention_extractor.py) — low-level extractor. Runs the LVLM once, captures `outputs.scores` for vocab entropy and `outputs.attentions` for spatial attention, then aligns each generation step to its `x1 / y1 / x2 / y2` coordinate sub-token.
-- [`<model>/extraction/batch_bbox_attention_processor.py`](qwen2.5_small/extraction/batch_bbox_attention_processor.py) — driver. Iterates over the dataset (COCO / Objects365 single- or multi-object split), invokes the extractor per image, and writes the pkl files into `<DATA_ROOT>/.../model_response/`.
+- [`<model>/extraction/bbox_attention_extractor.py`](qwen2.5_small/extraction/bbox_attention_extractor.py) — low-level extractor (runs the LVLM once per image and saves the per-coordinate attention maps).
+- [`<model>/extraction/batch_bbox_attention_processor.py`](qwen2.5_small/extraction/batch_bbox_attention_processor.py) — driver. Iterates over the dataset (COCO / Objects365 single- or multi-object split) and writes one pkl per image into `<DATA_ROOT>/.../model_response/`.
 
 ```bash
 # Qwen2.5-VL (single A6000, ~6-8 h for 2,225 images × 10 responses at τ=1.0)
