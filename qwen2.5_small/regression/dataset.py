@@ -225,7 +225,7 @@ def create_dataloader(csv_file: str,
 def test_dataset():
     """测试数据集加载"""
     # 测试路径
-    base_dir = "/data2/Tianze/context-aware/testing_time_filter_training/regression/processed_data/temp_1.0_top_p_0.9"
+    base_dir = "path/to/processed_data/temp_1.0_top_p_0.9_response_10"
     
     csv_file = os.path.join(base_dir, "train_list.csv")
     pkl_dir = os.path.join(base_dir, "train")

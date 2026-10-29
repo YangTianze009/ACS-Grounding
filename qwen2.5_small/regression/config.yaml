@@ -2,11 +2,11 @@
 
 # Data paths
 data:
-  root_dir: "/scratch/ty45972/MLLM_object_detection/object_detection_Qwen/regression_training/processed_data"
+  root_dir: "../../data/object_detection_Qwen/regression_training/processed_data"
   dataset: "COCO"
   object_num: "single"
   target_dir: "temp_1.0_top_p_0.9_response_10"
-  test_results_dir: "/scratch/ty45972/MLLM_object_detection_emnlp/experiments/qwen2.5_small/evaluation/regression_results"
+  test_results_dir: "../evaluation/regression_results"
   train_csv: "train_list.csv"
   val_csv: "val_list.csv"
   test_csv: "test_list.csv"
@@ -63,7 +63,7 @@ logging:
   save_last_model: true
 
 # Device
-device: "cuda:1"  # "cuda" or "cpu"
+device: "cuda:0"  # "cuda" or "cpu"
 
 # Random seed
 seed: 42

@@ -23,11 +23,12 @@ import pandas as pd
 import numpy as np
 
 
-# Original data location (read-only) — model_response pkls live here
-ORIG_DATA_ROOT = "/scratch/ty45972/MLLM_object_detection/object_detection_InternVL/model_response"
+# model_response pkls: $DATA_ROOT/object_detection_InternVL/model_response (DATA_ROOT defaults to <repo>/data)
+ORIG_DATA_ROOT = os.path.join(os.environ.get("DATA_ROOT", str(Path(__file__).resolve().parents[2] / "data")),
+                              "object_detection_InternVL", "model_response")
 
-# Output + selection CSV location — within emnlp folder
-EXP_DIR = Path(__file__).resolve().parent.parent  # /scratch/.../emnlp/experiments/qwen_small
+# Output + selection CSV location
+EXP_DIR = Path(__file__).resolve().parent.parent  # <repo>/<model>
 DETECTION_RESULTS_DIR = EXP_DIR / "evaluation" / "detection_results"
 
 

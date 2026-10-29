@@ -2,7 +2,7 @@
 
 # Data paths
 data:
-  root_dir: "/scratch/ty45972/MLLM_object_detection/object_detection_InternVL/regression_training/processed_data"
+  root_dir: "../../data/object_detection_InternVL/regression_training/processed_data"
   dataset: "COCO"
   # object_num: "multiple"
   target_dir: "temp_1.0_top_p_0.9_response_10"
@@ -62,7 +62,7 @@ logging:
   save_last_model: true
 
 # Device
-device: "cuda:1"  # "cuda" or "cpu"
+device: "cuda:0"  # "cuda" or "cpu"
 
 # Random seed
 seed: 42

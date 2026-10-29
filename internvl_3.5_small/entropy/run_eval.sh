@@ -7,6 +7,8 @@
 
 set -e
 cd "$(dirname "$0")"
+DATA_ROOT=${DATA_ROOT:-$(cd ../.. && pwd)/data}   # folder holding object_detection_<Model>/ (see README)
+PYTHON=${PYTHON:-python3}
 
 TEMP=${1:-0.5}
 DATASET=${2:-COCO}
@@ -21,13 +23,13 @@ if [ ! -f "$SEL_CSV" ]; then
   exit 1
 fi
 
-DATA_ROOT="/scratch/ty45972/MLLM_object_detection/object_detection_InternVL/model_response/${DATASET}/testing/bbox_attention_temp_${TEMP}_top_p_0.9_response_10"
+RESP_DIR="${DATA_ROOT}/object_detection_InternVL/model_response/${DATASET}/testing/bbox_attention_temp_${TEMP}_top_p_0.9_response_10"
 mkdir -p "$OUT_DIR_ABS"
 
-cd /scratch/ty45972/MLLM_object_detection_emnlp/experiments/internvl_3.5_small
-python3 evaluation/evaluate_single_object.py \
+cd "$REPRO_DIR/.."
+$PYTHON evaluation/evaluate_single_object.py \
   --method greedy --dataset "$DATASET" \
-  --data_root "$DATA_ROOT" \
+  --data_root "$RESP_DIR" \
   --selection_csv "$SEL_CSV" \
   --output_dir "$OUT_DIR_ABS" \
   --total_images 2225 2>&1 | tee "$OUT_DIR_ABS/eval.log"

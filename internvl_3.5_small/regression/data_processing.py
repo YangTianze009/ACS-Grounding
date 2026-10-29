@@ -677,10 +677,10 @@ if __name__ == "__main__":
 
     # Example 1: Process train/val data
     if data_type == "training":
-        train_val_dir = f"/scratch/ty45972/MLLM_object_detection/object_detection_InternVL/model_response/{dataset_name}/training/{response_dir}"
+        train_val_dir = f"{os.environ.get('DATA_ROOT', '../../data')}/object_detection_InternVL/model_response/{dataset_name}/training/{response_dir}"
         main_train_only(train_val_dir, output_dir, data_type)  # Process train/val data
     # Example 2: Process test data
     if data_type == "testing":
-        test_dir = f"/scratch/ty45972/MLLM_object_detection/object_detection_InternVL/model_response/{dataset_name}/testing/{response_dir}"
+        test_dir = f"{os.environ.get('DATA_ROOT', '../../data')}/object_detection_InternVL/model_response/{dataset_name}/testing/{response_dir}"
         main_test_only(test_dir, output_dir, data_type)  # Process test data
         

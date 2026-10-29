@@ -1,9 +1,7 @@
-# Config for InternVL entropy-based bbox selection — verbatim port from
-# /scratch/ty45972/MLLM_object_detection/object_detection_InternVL/regression_training/config_regression.yaml
-# Only root_dir is changed to point at the locally-available processed_data.
+# Config for ACS-Free (entropy-based selection). Only data.* and model.normalize_attention are used.
 
 data:
-  root_dir: "/scratch/ty45972/MLLM_object_detection/object_detection_InternVL/regression_training/processed_data"
+  root_dir: "../../data/object_detection_InternVL/regression_training/processed_data"
   dataset: "COCO"
   target_dir: "temp_0.5_top_p_0.9_response_10"
   train_csv: "train_list.csv"
@@ -55,5 +53,5 @@ logging:
   save_best_model: true
   save_last_model: true
 
-device: "cuda:1"
+device: "cuda:0"
 seed: 42

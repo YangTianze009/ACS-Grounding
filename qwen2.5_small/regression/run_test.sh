@@ -12,13 +12,14 @@ set -eo pipefail
 cd "$(dirname "$0")"
 REG_DIR=$(pwd)
 MODEL_DIR=$(cd .. && pwd)
-PYTHON=/home/ty45972/.conda/envs/Qwen/bin/python3
+DATA_ROOT=${DATA_ROOT:-$(cd "$MODEL_DIR/.." && pwd)/data}   # folder holding object_detection_<Model>/ (see README)
+PYTHON=${PYTHON:-python3}
 
 TEMP=${1:-0.5}
 DATASET=${2:-COCO}
 TARGET_DIR="temp_${TEMP}_top_p_0.9_response_10"
 
-MODEL_CKPT=$REG_DIR/runs/single_object/temp_1.0_top_p_0.9_response_10/enhanced_bbox_regressor_20250920_181221/best_model.pth
+MODEL_CKPT=${CKPT:-$MODEL_DIR/../weights/acs_learned_qwen2.5-vl-7b.pth}   # released ACS-Learned weights (see README)
 PRED_OUT_DIR=$MODEL_DIR/evaluation/regression_results/$DATASET/single_object/$TARGET_DIR
 SEL_CSV_DIR=$MODEL_DIR/evaluation/selection_csvs/$DATASET
 SEL_CSV=$SEL_CSV_DIR/regression_${TARGET_DIR}_selection.csv
@@ -32,6 +33,7 @@ sed -e "s|target_dir:.*|target_dir: \"${TARGET_DIR}\"|" \
     -e "s|dataset:.*|dataset: \"${DATASET}\"|" \
     -e "s|test_results_dir:.*|test_results_dir: \"$MODEL_DIR/evaluation/regression_results\"|" \
     -e 's|^device:.*|device: "cuda:0"|' \
+    -e "s|root_dir:.*|root_dir: \"${DATA_ROOT}/object_detection_Qwen/regression_training/processed_data\"|" \
     "$REG_DIR/config.yaml" > "$TMP_CFG"
 
 echo "=========================================="
@@ -52,10 +54,10 @@ PRED_CSV=$PRED_OUT_DIR/prediction_comparison.csv
 $PYTHON prediction_to_selection.py "$PRED_CSV" "$SEL_CSV"
 
 # Step 3: eval
-DATA_ROOT=/scratch/ty45972/MLLM_object_detection/object_detection_Qwen/model_response/$DATASET/testing/single_object/bbox_attention_${TARGET_DIR}
+RESP_DIR=${DATA_ROOT}/object_detection_Qwen/model_response/$DATASET/testing/single_object/bbox_attention_${TARGET_DIR}
 $PYTHON "$MODEL_DIR/evaluation/evaluate_single_object.py" \
   --method greedy --dataset "$DATASET" \
-  --data_root "$DATA_ROOT" --selection_csv "$SEL_CSV" \
+  --data_root "$RESP_DIR" --selection_csv "$SEL_CSV" \
   --output_dir "$EVAL_DIR" --total_images 2225 2>&1 | grep -E "Total images|Detected|Accuracy|Mean IoU" | tail -5
 
 echo "=========================================="

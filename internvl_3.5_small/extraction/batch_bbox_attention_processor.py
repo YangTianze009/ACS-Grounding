@@ -56,6 +56,10 @@ def parse_args():
                        help="select prompt type")
     parser.add_argument("--dataset", type=str, default="COCO",
                        help="select dataset (COCO or Objects365)")
+    parser.add_argument("--model_path", type=str, default="OpenGVLab/InternVL3_5-8B-HF",
+                       help="HF hub id or local path of the LVLM")
+    parser.add_argument("--data_dir", type=str, default="../../dataset_splits",
+                       help="folder with the split CSVs (dataset_splits/) and the images (see README)")
     
     return parser.parse_args()
 
@@ -67,7 +71,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = args.device
 
 # Load model and processor
 print("Loading InternVL3.5 model and processor...")
-model_checkpoint = "/data2/Tianze/weights/InternVL3_5-8B-HF"
+model_checkpoint = args.model_path
 processor = AutoProcessor.from_pretrained(model_checkpoint)
 model = AutoModelForImageTextToText.from_pretrained(
     model_checkpoint,
@@ -96,15 +100,15 @@ def setup_config(args):
         # Paths
     if config['dataset_name'] == "COCO":
         if args.data_type == "training":
-            config['csv_path'] = f"/data2/Tianze/context-aware/object_detection/datasets/COCO/coco_small_{args.object_num}_object_training.csv"
-            config['image_dir'] = "/data2/Tianze/context-aware/object_detection/datasets/COCO/train2017"
+            config['csv_path'] = f"{args.data_dir}/COCO/coco_small_{args.object_num}_object_training.csv"
+            config['image_dir'] = f"{args.data_dir}/COCO/train2017"
         elif args.data_type == "testing":
-            config['csv_path'] = f"/data2/Tianze/context-aware/object_detection/datasets/COCO/coco_small_{args.object_num}_object_testing.csv"
-            config['image_dir'] = "/data2/Tianze/context-aware/object_detection/datasets/COCO/val2017"
+            config['csv_path'] = f"{args.data_dir}/COCO/coco_small_{args.object_num}_object_testing.csv"
+            config['image_dir'] = f"{args.data_dir}/COCO/val2017"
 
     elif config['dataset_name'] == "Objects365":
-        config['csv_path'] = f"/data2/Tianze/MLLM_object_detection/dataset/Objects365/object365_single_object_testing/object365_single_object_testing.csv"
-        config['image_dir'] = "/data2/Tianze/MLLM_object_detection/dataset/Objects365/object365_single_object_testing/images"
+        config['csv_path'] = f"{args.data_dir}/Objects365/object365_single_object_testing.csv"
+        config['image_dir'] = f"{args.data_dir}/Objects365/images"
     else:
         raise ValueError(f"Invalid data_type: {args.data_type}. Must be 'training' or 'testing'")
 

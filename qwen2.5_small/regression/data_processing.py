@@ -815,7 +815,7 @@ def parse_arguments():
     parser.add_argument(
         '--base_dir',
         type=str,
-        default='/scratch/ty45972/MLLM_object_detection/object_detection_Qwen/model_response',
+        default=os.path.join(os.environ.get('DATA_ROOT', '../../data'), 'object_detection_Qwen', 'model_response'),
         help='Base directory for model responses'
     )
     
