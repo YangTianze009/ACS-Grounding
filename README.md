@@ -10,8 +10,8 @@ University of Georgia
 
 [![Project Page](https://img.shields.io/badge/Project-Page-1d5fb8)](https://groundvlm.github.io/)
 [![Paper](https://img.shields.io/badge/Paper-PDF-b31b1b)](https://groundvlm.github.io/paper.pdf)
-[![Weights](https://img.shields.io/badge/%F0%9F%A4%97%20Weights-ACS--Learned-ffd21e)](https://huggingface.co/__HF_ORG__/ACS-Learned)
-[![Data](https://img.shields.io/badge/%F0%9F%A4%97%20Data-attention%20maps-ffd21e)](https://huggingface.co/datasets/__HF_ORG__/ACS-attention-Qwen2.5-VL-COCO)
+[![Weights](https://img.shields.io/badge/%F0%9F%A4%97%20Weights-ACS--Learned-ffd21e)](https://huggingface.co/groundvlm/ACS-Learned)
+[![Data](https://img.shields.io/badge/%F0%9F%A4%97%20Data-attention%20maps-ffd21e)](https://huggingface.co/datasets/groundvlm/ACS-attention-Qwen2.5-VL-COCO)
 
 </div>
 
@@ -69,10 +69,10 @@ This uses the released attention maps, so you do not need to run the LVLM.
 
 ```bash
 # ACS-Learned weights (one regressor per LVLM)
-huggingface-cli download __HF_ORG__/ACS-Learned --local-dir weights
+huggingface-cli download groundvlm/ACS-Learned --local-dir weights
 
 # Cached candidates + attention maps for Qwen2.5-VL / COCO / τ = 0.5 (≈45 GB compressed)
-huggingface-cli download __HF_ORG__/ACS-attention-Qwen2.5-VL-COCO --repo-type dataset --local-dir hf_data
+huggingface-cli download groundvlm/ACS-attention-Qwen2.5-VL-COCO --repo-type dataset --local-dir hf_data
 mkdir -p data && for f in hf_data/*.tar.gz; do tar -xzf "$f" -C data; done
 ```
 
