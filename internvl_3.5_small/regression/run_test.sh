@@ -19,7 +19,7 @@ TEMP=${1:-0.5}
 DATASET=${2:-COCO}
 TARGET_DIR="temp_${TEMP}_top_p_0.9_response_10"
 
-MODEL_CKPT=${CKPT:-$MODEL_DIR/../weights/acs_learned_internvl3.5-8b.pth}   # released ACS-Learned weights (see README)
+MODEL_CKPT=${CKPT:-$MODEL_DIR/../weights/InternVL3.5-8B/attention_iou_regressor.pth}   # released ACS-Learned weights (see README)
 # InternVL test.py writes to ../evaluation/regression_results/<DS>/<target_dir> (relative to CWD)
 PRED_OUT_DIR=$MODEL_DIR/evaluation/regression_results/$DATASET/$TARGET_DIR
 SEL_CSV_DIR=$MODEL_DIR/evaluation/selection_csvs/$DATASET

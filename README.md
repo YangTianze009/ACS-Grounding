@@ -10,8 +10,9 @@ University of Georgia
 
 [![Project Page](https://img.shields.io/badge/Project-Page-1d5fb8)](https://groundvlm.github.io/)
 [![Paper](https://img.shields.io/badge/Paper-PDF-b31b1b)](https://groundvlm.github.io/paper.pdf)
-[![Weights](https://img.shields.io/badge/%F0%9F%A4%97%20Weights-ACS--Learned-ffd21e)](https://huggingface.co/groundvlm/ACS-Learned)
-[![Data](https://img.shields.io/badge/%F0%9F%A4%97%20Data-attention%20maps-ffd21e)](https://huggingface.co/datasets/groundvlm/ACS-attention-Qwen2.5-VL-COCO)
+[![Regressor (Qwen)](https://img.shields.io/badge/%F0%9F%A4%97%20Regressor-Qwen2.5--VL--7B-ffd21e)](https://huggingface.co/groundvlm/Attention-IoU-Regressor-Qwen2.5-VL-7B)
+[![Regressor (InternVL)](https://img.shields.io/badge/%F0%9F%A4%97%20Regressor-InternVL3.5--8B-ffd21e)](https://huggingface.co/groundvlm/Attention-IoU-Regressor-InternVL3.5-8B)
+[![Data](https://img.shields.io/badge/%F0%9F%A4%97%20Data-attention%20maps-ffd21e)](https://huggingface.co/datasets/groundvlm/ACS-Attention-Maps-Qwen2.5-VL-7B-COCO)
 
 </div>
 
@@ -68,11 +69,12 @@ This uses the released attention maps, so you do not need to run the LVLM.
 ### 1. Download weights and data
 
 ```bash
-# ACS-Learned weights (one regressor per LVLM)
-huggingface-cli download groundvlm/ACS-Learned --local-dir weights
+# Attention-IoU Regressor (ACS-Learned), one per LVLM
+huggingface-cli download groundvlm/Attention-IoU-Regressor-Qwen2.5-VL-7B  --local-dir weights/Qwen2.5-VL-7B
+huggingface-cli download groundvlm/Attention-IoU-Regressor-InternVL3.5-8B --local-dir weights/InternVL3.5-8B
 
 # Cached candidates + attention maps for Qwen2.5-VL / COCO / τ = 0.5 (≈45 GB compressed)
-huggingface-cli download groundvlm/ACS-attention-Qwen2.5-VL-COCO --repo-type dataset --local-dir hf_data
+huggingface-cli download groundvlm/ACS-Attention-Maps-Qwen2.5-VL-7B-COCO --repo-type dataset --local-dir hf_data
 mkdir -p data && for f in hf_data/*.tar.gz; do tar -xzf "$f" -C data; done
 ```
 
@@ -102,7 +104,7 @@ bash qwen2.5_small/entropy/run_eval.sh   0.5 COCO     # → Accuracy 0.6337, Mea
 bash qwen2.5_small/regression/run_test.sh 0.5 COCO    # → Accuracy 0.6526, Mean IoU 0.5523
 ```
 
-`run_test.sh` scores every candidate with the regressor, keeps the argmax per image, and evaluates the result. Pass a different checkpoint with `CKPT=/path/to/model.pth` and a different interpreter with `PYTHON=...`.
+`run_test.sh` scores every candidate with the regressor, keeps the argmax per image, and evaluates the result. Across GPU models, floating-point differences can flip a few near-tied candidates. For example, an A100 gives 65.26 / 55.22, which matches the paper's 65.3 / 55.2 at one decimal. Pass a different checkpoint with `CKPT=/path/to/model.pth` and a different interpreter with `PYTHON=...`.
 
 ## Full pipeline (other models, datasets and temperatures)
 

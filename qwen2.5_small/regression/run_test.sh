@@ -19,7 +19,7 @@ TEMP=${1:-0.5}
 DATASET=${2:-COCO}
 TARGET_DIR="temp_${TEMP}_top_p_0.9_response_10"
 
-MODEL_CKPT=${CKPT:-$MODEL_DIR/../weights/acs_learned_qwen2.5-vl-7b.pth}   # released ACS-Learned weights (see README)
+MODEL_CKPT=${CKPT:-$MODEL_DIR/../weights/Qwen2.5-VL-7B/attention_iou_regressor.pth}   # released ACS-Learned weights (see README)
 PRED_OUT_DIR=$MODEL_DIR/evaluation/regression_results/$DATASET/single_object/$TARGET_DIR
 SEL_CSV_DIR=$MODEL_DIR/evaluation/selection_csvs/$DATASET
 SEL_CSV=$SEL_CSV_DIR/regression_${TARGET_DIR}_selection.csv
